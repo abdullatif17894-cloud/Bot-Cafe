@@ -1,0 +1,147 @@
+{
+  "items": [
+    {
+      "id": "espresso",
+      "name": "Espresso",
+      "category": "Coffee",
+      "description": "A bold, concentrated shot pulled from our house-roasted blend.",
+      "price": 3.00,
+      "sizes": ["Single", "Double"],
+      "options": [],
+      "allergens": [],
+      "available": true
+    },
+    {
+      "id": "americano",
+      "name": "Americano",
+      "category": "Coffee",
+      "description": "Espresso topped with hot water for a smooth, lighter-bodied cup.",
+      "price": 3.50,
+      "sizes": ["Small", "Medium", "Large"],
+      "options": [],
+      "allergens": [],
+      "available": true
+    },
+    {
+      "id": "cappuccino",
+      "name": "Cappuccino",
+      "category": "Coffee",
+      "description": "Espresso topped with steamed milk and a thick layer of foam.",
+      "price": 4.50,
+      "sizes": ["Small", "Medium", "Large"],
+      "options": ["Oat milk", "Almond milk", "Skim milk"],
+      "allergens": ["dairy"],
+      "available": true
+    },
+    {
+      "id": "caramel-latte",
+      "name": "Caramel Latte",
+      "category": "Coffee",
+      "description": "Smooth espresso, steamed milk, and house-made caramel syrup.",
+      "price": 5.00,
+      "sizes": ["Small", "Medium", "Large"],
+      "options": ["Oat milk", "Almond milk", "Skim milk", "Extra shot"],
+      "allergens": ["dairy"],
+      "available": true
+    },
+    {
+      "id": "mocha",
+      "name": "Mocha",
+      "category": "Coffee",
+      "description": "Espresso with steamed milk and rich dark chocolate.",
+      "price": 5.25,
+      "sizes": ["Small", "Medium", "Large"],
+      "options": ["Oat milk", "Almond milk", "Whipped cream"],
+      "allergens": ["dairy"],
+      "available": true
+    },
+    {
+      "id": "cold-brew",
+      "name": "Cold Brew",
+      "category": "Coffee",
+      "description": "Slow-steeped for 18 hours for a smooth, low-acid finish.",
+      "price": 4.75,
+      "sizes": ["Medium", "Large"],
+      "options": ["Splash of milk"],
+      "allergens": [],
+      "available": true
+    },
+    {
+      "id": "chai-latte",
+      "name": "Chai Latte",
+      "category": "Tea",
+      "description": "Spiced black tea steamed with milk and a touch of honey.",
+      "price": 4.75,
+      "sizes": ["Small", "Medium", "Large"],
+      "options": ["Oat milk", "Almond milk", "Extra spice"],
+      "allergens": ["dairy"],
+      "available": true
+    },
+    {
+      "id": "iced-tea",
+      "name": "Iced Tea",
+      "category": "Tea",
+      "description": "Freshly brewed black tea served chilled over ice.",
+      "price": 3.25,
+      "sizes": ["Medium", "Large"],
+      "options": ["Unsweetened", "Lightly sweetened", "Lemon"],
+      "allergens": [],
+      "available": true
+    },
+    {
+      "id": "butter-croissant",
+      "name": "Butter Croissant",
+      "category": "Pastries",
+      "description": "Flaky, buttery, and baked fresh in-house every morning.",
+      "price": 3.50,
+      "sizes": [],
+      "options": ["Warmed"],
+      "allergens": ["gluten", "dairy", "eggs"],
+      "available": true
+    },
+    {
+      "id": "blueberry-muffin",
+      "name": "Blueberry Muffin",
+      "category": "Pastries",
+      "description": "Made with real blueberries and a hint of lemon zest.",
+      "price": 3.25,
+      "sizes": [],
+      "options": [],
+      "allergens": ["gluten", "dairy", "eggs"],
+      "available": true
+    },
+    {
+      "id": "cinnamon-roll",
+      "name": "Cinnamon Roll",
+      "category": "Pastries",
+      "description": "Soft-baked roll swirled with cinnamon sugar and cream cheese icing.",
+      "price": 4.25,
+      "sizes": [],
+      "options": ["Warmed"],
+      "allergens": ["gluten", "dairy", "eggs"],
+      "available": false
+    },
+    {
+      "id": "avocado-toast",
+      "name": "Avocado Toast",
+      "category": "Food",
+      "description": "Sourdough, smashed avocado, chili flakes, and a squeeze of lime.",
+      "price": 7.50,
+      "sizes": [],
+      "options": ["Add egg", "Add feta", "Gluten-free bread"],
+      "allergens": ["gluten"],
+      "available": true
+    },
+    {
+      "id": "bagel-cream-cheese",
+      "name": "Bagel with Cream Cheese",
+      "category": "Food",
+      "description": "Toasted plain bagel served with a generous spread of cream cheese.",
+      "price": 4.50,
+      "sizes": [],
+      "options": ["Plain", "Everything", "Sesame"],
+      "allergens": ["gluten", "dairy"],
+      "available": true
+    }
+  ]
+}

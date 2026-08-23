@@ -1,0 +1,47 @@
+{
+  "promotions": [
+    {
+      "id": "happy-hour-10",
+      "name": "Happy Hour 10% Off",
+      "rule": "10% off all Coffee category items when ordered during happy hour.",
+      "discountType": "percentage",
+      "discountValue": 10,
+      "eligibility": {
+        "appliesToCategories": ["Coffee"],
+        "minOrderValue": null,
+        "validDays": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+        "validHours": "14:00-16:00"
+      },
+      "active": true
+    },
+    {
+      "id": "weekend-pastry-bogo",
+      "name": "Weekend Pastry BOGO",
+      "rule": "Buy one Pastries category item, get a second Pastries item of equal or lesser value free.",
+      "discountType": "buy_one_get_one",
+      "discountValue": 100,
+      "eligibility": {
+        "appliesToCategories": ["Pastries"],
+        "minOrderValue": null,
+        "validDays": ["Saturday", "Sunday"],
+        "validHours": null
+      },
+      "active": true
+    },
+    {
+      "id": "student-discount-15",
+      "name": "Student Discount 15% Off",
+      "rule": "15% off the entire order for customers with a valid student ID.",
+      "discountType": "percentage",
+      "discountValue": 15,
+      "eligibility": {
+        "appliesToCategories": ["Coffee", "Tea", "Pastries", "Food"],
+        "minOrderValue": null,
+        "requiresVerification": "student ID",
+        "validDays": null,
+        "validHours": null
+      },
+      "active": false
+    }
+  ]
+}

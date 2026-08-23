@@ -1,0 +1,614 @@
+/* ==========================================================================
+   Aroma Café — Stylesheet
+   ========================================================================== */
+
+:root {
+  --color-bg: #fbf6ef;
+  --color-surface: #ffffff;
+  --color-text: #2c2016;
+  --color-text-muted: #6b5d4f;
+  --color-primary: #6f4e37;
+  --color-primary-dark: #4a3325;
+  --color-accent: #c8874a;
+  --color-border: #e6dccb;
+
+  --font-heading: Georgia, 'Times New Roman', serif;
+  --font-body: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+
+  --max-width: 1140px;
+  --radius: 10px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-body);
+  color: var(--color-text);
+  background: var(--color-bg);
+  line-height: 1.6;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+h1, h2, h3 {
+  font-family: var(--font-heading);
+  margin: 0 0 0.5em;
+  line-height: 1.2;
+}
+
+.container {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+/* ==========================================================================
+   Buttons
+   ========================================================================== */
+
+.btn {
+  display: inline-block;
+  padding: 14px 32px;
+  border-radius: 999px;
+  font-weight: 600;
+  font-size: 1rem;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.btn-primary {
+  background: var(--color-primary);
+  color: #fff;
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(74, 51, 37, 0.25);
+}
+
+/* ==========================================================================
+   Header
+   ========================================================================== */
+
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: var(--color-bg);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.header-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding-top: 16px;
+  padding-bottom: 16px;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-heading);
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--color-primary-dark);
+}
+
+.logo-mark {
+  font-size: 1.6rem;
+}
+
+.logo-text em {
+  font-style: normal;
+  color: var(--color-accent);
+}
+
+.main-nav ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.main-nav a {
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: var(--color-text);
+  padding: 6px 2px;
+  border-bottom: 2px solid transparent;
+  transition: border-color 0.15s ease, color 0.15s ease;
+}
+
+.main-nav a:hover {
+  color: var(--color-primary);
+  border-bottom-color: var(--color-accent);
+}
+
+/* ==========================================================================
+   Hero
+   ========================================================================== */
+
+.hero {
+  padding: 96px 0;
+  background: linear-gradient(180deg, #f3e6d3 0%, var(--color-bg) 100%);
+  text-align: center;
+}
+
+.hero-inner {
+  max-width: 720px;
+}
+
+.hero h1 {
+  font-size: clamp(2.2rem, 5vw, 3.4rem);
+  color: var(--color-primary-dark);
+}
+
+.hero-subtext {
+  font-size: 1.15rem;
+  color: var(--color-text-muted);
+  margin-bottom: 32px;
+}
+
+/* ==========================================================================
+   About
+   ========================================================================== */
+
+.about {
+  padding: 80px 0;
+}
+
+.about-inner {
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: 48px;
+  align-items: center;
+}
+
+.about-text h2 {
+  color: var(--color-primary-dark);
+  font-size: 2rem;
+}
+
+.about-text p {
+  color: var(--color-text-muted);
+}
+
+.about-image {
+  width: 100%;
+  min-height: 280px;
+  border-radius: var(--radius);
+  background: linear-gradient(135deg, var(--color-accent), var(--color-primary));
+}
+
+/* ==========================================================================
+   Menu
+   ========================================================================== */
+
+.menu {
+  padding: 80px 0;
+  background: var(--color-surface);
+  border-top: 1px solid var(--color-border);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.section-title {
+  text-align: center;
+  font-size: 2rem;
+  color: var(--color-primary-dark);
+  margin-bottom: 0.25em;
+}
+
+.section-subtitle {
+  text-align: center;
+  color: var(--color-text-muted);
+  margin-bottom: 48px;
+}
+
+.menu-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 24px;
+}
+
+.menu-card {
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  padding: 24px;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.menu-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 24px rgba(44, 32, 22, 0.08);
+}
+
+.menu-card-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  font-size: 1.15rem;
+  gap: 12px;
+}
+
+.menu-card-price {
+  font-family: var(--font-body);
+  font-weight: 700;
+  color: var(--color-accent);
+  white-space: nowrap;
+}
+
+.menu-card p {
+  margin: 0.5em 0 0;
+  color: var(--color-text-muted);
+  font-size: 0.95rem;
+}
+
+/* ==========================================================================
+   Hours & Location
+   ========================================================================== */
+
+.hours {
+  padding: 80px 0;
+}
+
+.hours-inner {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 48px;
+}
+
+.hours-block h2 {
+  color: var(--color-primary-dark);
+  font-size: 1.6rem;
+}
+
+.hours-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.hours-list li {
+  display: flex;
+  justify-content: space-between;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--color-border);
+  color: var(--color-text-muted);
+}
+
+.hours-list li span:first-child {
+  color: var(--color-text);
+  font-weight: 600;
+}
+
+address {
+  font-style: normal;
+  color: var(--color-text-muted);
+}
+
+address a {
+  color: var(--color-primary);
+  font-weight: 600;
+}
+
+/* ==========================================================================
+   Footer
+   ========================================================================== */
+
+.site-footer {
+  background: var(--color-primary-dark);
+  color: #f3e6d3;
+  padding: 32px 0;
+}
+
+.footer-inner {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+}
+
+.footer-inner p {
+  margin: 0;
+  font-size: 0.9rem;
+  opacity: 0.85;
+}
+
+.social-links {
+  display: flex;
+  gap: 20px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.social-links a {
+  font-size: 0.9rem;
+  font-weight: 600;
+  opacity: 0.85;
+  transition: opacity 0.15s ease;
+}
+
+.social-links a:hover {
+  opacity: 1;
+}
+
+/* ==========================================================================
+   CafeBot Chat Widget
+   ========================================================================== */
+
+.cafebot-widget {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  z-index: 1000;
+  font-family: var(--font-body);
+}
+
+.cafebot-toggle {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  border: none;
+  background: var(--color-primary);
+  color: #fff;
+  font-size: 1.5rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 10px 24px rgba(44, 32, 22, 0.3);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.cafebot-toggle:hover {
+  transform: translateY(-2px) scale(1.03);
+  box-shadow: 0 14px 28px rgba(44, 32, 22, 0.35);
+}
+
+.cafebot-toggle-icon-close {
+  display: none;
+}
+
+.cafebot-widget.is-open .cafebot-toggle-icon-open {
+  display: none;
+}
+
+.cafebot-widget.is-open .cafebot-toggle-icon-close {
+  display: inline;
+}
+
+.cafebot-window {
+  position: absolute;
+  right: 0;
+  bottom: calc(100% + 12px);
+
+  width: 340px;
+  max-width: calc(100vw - 48px);
+  height: 460px;
+  max-height: calc(100vh - 120px);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  box-shadow: 0 20px 48px rgba(44, 32, 22, 0.25);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+
+  transform: translateY(16px) scale(0.98);
+  opacity: 0;
+  pointer-events: none;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.cafebot-window.is-visible {
+  transform: translateY(0) scale(1);
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.cafebot-window[hidden] {
+  display: none;
+}
+
+.cafebot-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px;
+  background: var(--color-primary-dark);
+  color: #fff;
+}
+
+.cafebot-header-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.cafebot-avatar {
+  font-size: 1.2rem;
+}
+
+.cafebot-header-title {
+  font-weight: 700;
+  font-family: var(--font-heading);
+}
+
+.cafebot-close {
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 1rem;
+  cursor: pointer;
+  opacity: 0.8;
+  line-height: 1;
+  padding: 4px;
+}
+
+.cafebot-close:hover {
+  opacity: 1;
+}
+
+.cafebot-messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background: var(--color-bg);
+}
+
+.cafebot-bubble {
+  max-width: 80%;
+  padding: 10px 14px;
+  border-radius: 14px;
+  font-size: 0.9rem;
+  line-height: 1.4;
+  word-wrap: break-word;
+}
+
+.cafebot-bubble-bot {
+  align-self: flex-start;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  color: var(--color-text);
+  border-bottom-left-radius: 4px;
+}
+
+.cafebot-bubble-user {
+  align-self: flex-end;
+  background: var(--color-primary);
+  color: #fff;
+  border-bottom-right-radius: 4px;
+}
+
+.cafebot-input-row {
+  display: flex;
+  gap: 8px;
+  padding: 12px;
+  border-top: 1px solid var(--color-border);
+  background: var(--color-surface);
+}
+
+.cafebot-input {
+  flex: 1;
+  padding: 10px 14px;
+  border-radius: 999px;
+  border: 1px solid var(--color-border);
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  outline: none;
+}
+
+.cafebot-input:focus {
+  border-color: var(--color-primary);
+}
+
+.cafebot-send {
+  padding: 10px 18px;
+  border-radius: 999px;
+  border: none;
+  background: var(--color-primary);
+  color: #fff;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.cafebot-send:hover {
+  background: var(--color-primary-dark);
+}
+
+/* ==========================================================================
+   Responsive
+   ========================================================================== */
+
+@media (max-width: 860px) {
+  .about-inner {
+    grid-template-columns: 1fr;
+  }
+
+  .about-image {
+    order: -1;
+    min-height: 220px;
+  }
+
+  .hours-inner {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+}
+
+@media (max-width: 640px) {
+  .header-inner {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .main-nav ul {
+    gap: 16px;
+    font-size: 0.9rem;
+  }
+
+  .hero {
+    padding: 64px 0;
+  }
+
+  .about,
+  .menu,
+  .hours {
+    padding: 56px 0;
+  }
+
+  .footer-inner {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .cafebot-widget {
+    right: 16px;
+    bottom: 16px;
+  }
+
+  .cafebot-toggle {
+    width: 54px;
+    height: 54px;
+    font-size: 1.3rem;
+  }
+
+  .cafebot-window {
+    width: calc(100vw - 32px);
+    /* Reserve room for the toggle button below (bottom 16px + 54px button +
+       12px gap = 82px) and a generous margin above for the site header,
+       which can wrap to two lines and grow taller on narrow viewports —
+       fixed vh-only sizing doesn't account for that and can let the window
+       overlap the header on short mobile screens. */
+    height: min(70vh, 480px);
+    max-height: calc(100vh - 260px);
+  }
+}

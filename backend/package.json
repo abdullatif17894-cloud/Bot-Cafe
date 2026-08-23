@@ -1,0 +1,14 @@
+{
+  "name": "cafebot-backend",
+  "version": "1.0.0",
+  "description": "CafeBot backend server",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.32.1",
+    "dotenv": "^16.4.5",
+    "express": "^4.21.2"
+  }
+}

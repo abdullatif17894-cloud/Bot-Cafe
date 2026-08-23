@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Aroma Café — Staff Dashboard</title>
+  <style>
+    :root {
+      --coffee-dark: #3b2a20;
+      --coffee: #6f4e37;
+      --cream: #faf6f0;
+      --border: #ddd2c4;
+      --new: #b23b3b;
+      --preparing: #b8860b;
+      --ready: #2e7d32;
+      --completed: #6b7280;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--cream);
+      color: var(--coffee-dark);
+      padding: 24px;
+    }
+    h1 { margin: 0 0 4px; font-size: 1.5rem; }
+    p.subtitle { margin: 0 0 20px; color: #7a6a5c; font-size: 0.9rem; }
+    .table-wrap { overflow-x: auto; }
+    table {
+      width: 100%;
+      min-width: 720px;
+      border-collapse: collapse;
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    th, td {
+      text-align: left;
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--border);
+      vertical-align: top;
+      font-size: 0.9rem;
+    }
+    th { background: var(--coffee); color: #fff; font-weight: 600; }
+    tr:last-child td { border-bottom: none; }
+    .status-badge {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 999px;
+      color: #fff;
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+    }
+    .status-NEW { background: var(--new); }
+    .status-PREPARING { background: var(--preparing); }
+    .status-READY { background: var(--ready); }
+    .status-COMPLETED { background: var(--completed); }
+    button.advance {
+      display: block;
+      margin-top: 6px;
+      padding: 6px 12px;
+      border: none;
+      border-radius: 6px;
+      background: var(--coffee-dark);
+      color: #fff;
+      cursor: pointer;
+      font-size: 0.8rem;
+    }
+    button.advance:hover { opacity: 0.85; }
+    button.advance:disabled { background: #cbbfae; cursor: not-allowed; }
+    .empty, .error { padding: 20px; text-align: center; color: #7a6a5c; }
+    .error { color: #b23b3b; }
+    .item-line { margin: 0 0 2px; }
+    .muted { color: #9a8c7d; font-size: 0.8rem; }
+    button.refresh {
+      margin-bottom: 16px;
+      padding: 8px 14px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background: #fff;
+      color: var(--coffee-dark);
+      cursor: pointer;
+      font-size: 0.85rem;
+    }
+    button.refresh:hover { background: #f2ebe1; }
+  </style>
+</head>
+<body>
+  <h1>Staff Dashboard</h1>
+  <p class="subtitle">Orders from data/orders.json. Move each order forward with its status button.</p>
+  <button class="refresh" id="refreshBtn" type="button">Refresh</button>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Order ID</th>
+          <th>Items</th>
+          <th>Fulfillment</th>
+          <th>Customer</th>
+          <th>Total</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody id="ordersBody"></tbody>
+    </table>
+  </div>
+
+  <script>
+    const NEXT_STATUS = { NEW: 'PREPARING', PREPARING: 'READY', READY: 'COMPLETED', COMPLETED: null };
+    const NEXT_LABEL = { NEW: 'Start Preparing', PREPARING: 'Mark Ready', READY: 'Complete' };
+
+    function escapeHtml(str) {
+      return String(str).replace(/[&<>"']/g, (c) => ({
+        '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;',
+      }[c]));
+    }
+
+    function formatItems(items) {
+      if (!items || items.length === 0) return '<span class="muted">No items</span>';
+      return items.map((it) => {
+        const parts = [];
+        if (it.size) parts.push(escapeHtml(it.size));
+        if (it.options && it.options.length) parts.push(escapeHtml(it.options.join(', ')));
+        const detail = parts.length ? ` (${parts.join(' — ')})` : '';
+        return `<div class="item-line">${it.quantity}× ${escapeHtml(it.name)}${detail}</div>`;
+      }).join('');
+    }
+
+    function formatFulfillment(f) {
+      if (!f || !f.type) return '<span class="muted">—</span>';
+      if (f.type === 'pickup') {
+        return `Pickup${f.pickupTime ? ' — ' + escapeHtml(f.pickupTime) : ''}`;
+      }
+      if (f.type === 'delivery') {
+        const addr = [f.address, f.apartmentUnit].filter(Boolean).map(escapeHtml).join(', ');
+        return `Delivery — ${addr}`;
+      }
+      return escapeHtml(f.type);
+    }
+
+    function formatCustomer(f) {
+      if (!f) return '<span class="muted">—</span>';
+      const lines = [];
+      if (f.name) lines.push(escapeHtml(f.name));
+      if (f.phone) lines.push(escapeHtml(f.phone));
+      if (f.deliveryInstructions) lines.push(`<span class="muted">${escapeHtml(f.deliveryInstructions)}</span>`);
+      return lines.length ? lines.join('<br>') : '<span class="muted">—</span>';
+    }
+
+    function renderOrders(orders) {
+      const body = document.getElementById('ordersBody');
+      if (orders.length === 0) {
+        body.innerHTML = '<tr><td colspan="6" class="empty">No orders yet.</td></tr>';
+        return;
+      }
+
+      const sorted = [...orders].sort((a, b) => String(b.confirmedAt || '').localeCompare(String(a.confirmedAt || '')));
+
+      body.innerHTML = sorted.map((order) => {
+        const status = order.status || 'NEW';
+        const next = NEXT_STATUS[status];
+        const total = order.pricing && typeof order.pricing.grandTotal === 'number'
+          ? `$${order.pricing.grandTotal.toFixed(2)}`
+          : '—';
+        const shortId = order.orderId ? order.orderId.slice(0, 8) : '—';
+
+        const button = next
+          ? `<button class="advance" data-order-id="${escapeHtml(order.orderId)}" data-next-status="${next}">${NEXT_LABEL[status]}</button>`
+          : '';
+
+        return `
+          <tr>
+            <td title="${escapeHtml(order.orderId || '')}">${shortId}</td>
+            <td>${formatItems(order.items)}</td>
+            <td>${formatFulfillment(order.fulfillment)}</td>
+            <td>${formatCustomer(order.fulfillment)}</td>
+            <td>${total}</td>
+            <td>
+              <span class="status-badge status-${escapeHtml(status)}">${escapeHtml(status)}</span>
+              ${button}
+            </td>
+          </tr>
+        `;
+      }).join('');
+
+      body.querySelectorAll('button.advance').forEach((btn) => {
+        btn.addEventListener('click', () => advanceOrder(btn.dataset.orderId, btn.dataset.nextStatus, btn));
+      });
+    }
+
+    async function loadOrders() {
+      const body = document.getElementById('ordersBody');
+      body.innerHTML = '<tr><td colspan="6" class="empty">Loading…</td></tr>';
+      try {
+        const res = await fetch('/api/staff/orders');
+        if (!res.ok) throw new Error('Failed to load orders');
+        const data = await res.json();
+        renderOrders(data.orders || []);
+      } catch (err) {
+        body.innerHTML = '<tr><td colspan="6" class="error">Could not load orders. Is the server running?</td></tr>';
+      }
+    }
+
+    async function advanceOrder(orderId, nextStatus, button) {
+      button.disabled = true;
+      button.textContent = 'Updating…';
+      try {
+        const res = await fetch(`/api/staff/orders/${encodeURIComponent(orderId)}/status`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ status: nextStatus }),
+        });
+        if (!res.ok) {
+          const data = await res.json().catch(() => ({}));
+          throw new Error(data.error || 'Failed to update status');
+        }
+        await loadOrders();
+      } catch (err) {
+        alert(err.message || 'Could not update this order.');
+        button.disabled = false;
+        button.textContent = 'Retry';
+      }
+    }
+
+    document.getElementById('refreshBtn').addEventListener('click', loadOrders);
+    loadOrders();
+  </script>
+</body>
+</html>

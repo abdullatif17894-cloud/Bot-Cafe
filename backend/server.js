@@ -38,7 +38,20 @@ const SYSTEM_PROMPT =
   'and allergens whenever a customer asks about the menu. Do not answer menu ' +
   'questions from memory, and do not mention any item the tool does not return.';
 
-const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+// Built defensively: if ANTHROPIC_API_KEY isn't set yet (e.g. the site was
+// deployed before the key was added), the SDK's constructor can throw. That
+// would otherwise crash this whole file on load — breaking even the static
+// site and staff dashboard, not just chat. Catching it here means only the
+// chat feature is affected until the key is added.
+let anthropic = null;
+try {
+  anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+} catch (err) {
+  console.error(
+    'CafeBot: Anthropic client not initialized (missing ANTHROPIC_API_KEY?):',
+    err && err.message ? err.message : err
+  );
+}
 
 const MAX_TOOL_ITERATIONS = 3;
 
@@ -77,6 +90,14 @@ app.post('/api/chat', async (req, res) => {
   const sessionId = resolveSessionId(req, res);
 
   const history = Array.isArray(conversationHistory) ? conversationHistory : [];
+
+  if (!anthropic) {
+    return res.status(200).json({
+      reply:
+        "CafeBot's AI brain isn't connected yet — the site owner still needs to add an API key. Please check back soon, or ask our staff for help!",
+      conversationHistory: history,
+    });
+  }
 
   try {
     const workingMessages = [...history, { role: 'user', content: message }];

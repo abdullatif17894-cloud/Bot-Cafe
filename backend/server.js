@@ -177,6 +177,13 @@ app.post('/api/staff/orders/:orderId/status', (req, res) => {
   }
 });
 
-app.listen(PORT, () => {
-  console.log(`CafeBot server running at http://localhost:${PORT}`);
-});
+// Only start listening when this file is run directly (e.g. `npm start`).
+// When Vercel imports this file as a serverless function, it calls the
+// exported Express app directly and must not also start a local server.
+if (require.main === module) {
+  app.listen(PORT, () => {
+    console.log(`CafeBot server running at http://localhost:${PORT}`);
+  });
+}
+
+module.exports = app;

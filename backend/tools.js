@@ -5,6 +5,7 @@ const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
 const { getOrCreateSession, updateSession, resetSession } = require('./orderState');
+const { getOrdersPath } = require('./ordersPath');
 
 const MENU_PATH = path.join(__dirname, '..', 'data', 'menu.json');
 const MENU_DATA = JSON.parse(fs.readFileSync(MENU_PATH, 'utf8'));
@@ -18,7 +19,8 @@ const PRICING_DATA = JSON.parse(fs.readFileSync(PRICING_PATH, 'utf8'));
 
 // Temporary, file-based order storage for local development only (see
 // README.md notes) — where a finalized order is actually saved.
-const ORDERS_PATH = path.join(__dirname, '..', 'data', 'orders.json');
+// getOrdersPath() resolves to a writable location on Vercel too (see
+// ordersPath.js) so checkout doesn't crash in production.
 
 const TOOLS = [
   {
@@ -1156,9 +1158,10 @@ function finalizeOrderTool(input, sessionId) {
     pricing: summary.pricing,
   };
 
-  const existingOrders = JSON.parse(fs.readFileSync(ORDERS_PATH, 'utf8'));
+  const ordersPath = getOrdersPath();
+  const existingOrders = JSON.parse(fs.readFileSync(ordersPath, 'utf8'));
   existingOrders.push(savedOrder);
-  fs.writeFileSync(ORDERS_PATH, JSON.stringify(existingOrders, null, 2) + '\n', 'utf8');
+  fs.writeFileSync(ordersPath, JSON.stringify(existingOrders, null, 2) + '\n', 'utf8');
 
   // The order is saved; this session is free to start a new one.
   resetSession(sessionId);

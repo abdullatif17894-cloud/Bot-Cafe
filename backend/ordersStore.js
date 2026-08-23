@@ -14,9 +14,7 @@
 // updates, rewrites it.
 
 const fs = require('fs');
-const path = require('path');
-
-const ORDERS_PATH = path.join(__dirname, '..', 'data', 'orders.json');
+const { getOrdersPath } = require('./ordersPath');
 
 const STATUS_FLOW = ['NEW', 'PREPARING', 'READY', 'COMPLETED'];
 
@@ -29,13 +27,13 @@ const NEXT_STATUS = {
 };
 
 function readOrders() {
-  const raw = fs.readFileSync(ORDERS_PATH, 'utf8');
+  const raw = fs.readFileSync(getOrdersPath(), 'utf8');
   const parsed = JSON.parse(raw);
   return Array.isArray(parsed) ? parsed : [];
 }
 
 function writeOrders(orders) {
-  fs.writeFileSync(ORDERS_PATH, JSON.stringify(orders, null, 2) + '\n', 'utf8');
+  fs.writeFileSync(getOrdersPath(), JSON.stringify(orders, null, 2) + '\n', 'utf8');
 }
 
 function listOrders() {

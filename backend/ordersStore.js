@@ -1,20 +1,14 @@
-// NOTE: File-based storage (reading/writing data/orders.json) is for
-// local development and demo purposes only. It relies on a writable,
-// persistent local filesystem. Vercel's serverless functions run in an
-// ephemeral environment and do not guarantee that file writes persist
-// across invocations or deployments — this approach must be replaced with
-// a real database before deploying this app to Vercel or any other
-// serverless platform.
-//
-// Read/update access to data/orders.json for the staff dashboard.
+// NOTE: Orders are stored via ordersStorage.js — Upstash Redis when
+// connected (see ordersStorage.js for details), or data/orders.json
+// locally. This module adds the staff-dashboard-specific logic (advancing
+// an order's status) on top of that shared read/write.
 //
 // Kept separate from backend/tools.js's own order-saving logic
 // (finalizeOrder), so the customer-facing ordering tools are not touched by
-// this feature — this module only reads the same file and, for status
+// this feature — this module only reads the same data and, for status
 // updates, rewrites it.
 
-const fs = require('fs');
-const { getOrdersPath } = require('./ordersPath');
+const { readOrders, writeOrders } = require('./ordersStorage');
 
 const STATUS_FLOW = ['NEW', 'PREPARING', 'READY', 'COMPLETED'];
 
@@ -26,17 +20,7 @@ const NEXT_STATUS = {
   COMPLETED: null,
 };
 
-function readOrders() {
-  const raw = fs.readFileSync(getOrdersPath(), 'utf8');
-  const parsed = JSON.parse(raw);
-  return Array.isArray(parsed) ? parsed : [];
-}
-
-function writeOrders(orders) {
-  fs.writeFileSync(getOrdersPath(), JSON.stringify(orders, null, 2) + '\n', 'utf8');
-}
-
-function listOrders() {
+async function listOrders() {
   return readOrders();
 }
 
@@ -44,7 +28,7 @@ function listOrders() {
 // skipping steps, moving backwards, or an already-COMPLETED order — the
 // dashboard only ever offers the single valid next status as a button, and
 // this is the server-side check behind that.
-function updateOrderStatus(orderId, newStatus) {
+async function updateOrderStatus(orderId, newStatus) {
   if (!orderId || typeof orderId !== 'string') {
     return { success: false, error: 'orderId is required.' };
   }
@@ -52,7 +36,7 @@ function updateOrderStatus(orderId, newStatus) {
     return { success: false, error: `"${newStatus}" is not a valid status.` };
   }
 
-  const orders = readOrders();
+  const orders = await readOrders();
   const order = orders.find((o) => o.orderId === orderId);
   if (!order) {
     return { success: false, error: `No order found with id "${orderId}".` };
@@ -69,7 +53,7 @@ function updateOrderStatus(orderId, newStatus) {
   }
 
   order.status = newStatus;
-  writeOrders(orders);
+  await writeOrders(orders);
 
   return { success: true, order };
 }

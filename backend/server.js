@@ -119,19 +119,21 @@ app.post('/api/chat', async (req, res) => {
         // feed the results back so it can produce a final answer.
         workingMessages.push({ role: 'assistant', content: response.content });
 
-        const toolResultBlocks = toolUseBlocks.map((block) => {
-          let result;
-          try {
-            result = executeTool(block.name, block.input, sessionId);
-          } catch (toolErr) {
-            result = { error: toolErr.message };
-          }
-          return {
-            type: 'tool_result',
-            tool_use_id: block.id,
-            content: JSON.stringify(result),
-          };
-        });
+        const toolResultBlocks = await Promise.all(
+          toolUseBlocks.map(async (block) => {
+            let result;
+            try {
+              result = await executeTool(block.name, block.input, sessionId);
+            } catch (toolErr) {
+              result = { error: toolErr.message };
+            }
+            return {
+              type: 'tool_result',
+              tool_use_id: block.id,
+              content: JSON.stringify(result),
+            };
+          })
+        );
 
         workingMessages.push({ role: 'user', content: toolResultBlocks });
         continue;
@@ -166,11 +168,12 @@ app.post('/api/chat', async (req, res) => {
   }
 });
 
-// Staff dashboard API — reads/updates data/orders.json directly. No
+// Staff dashboard API — reads/updates order data via ordersStore.js (Upstash
+// Redis on Vercel, data/orders.json locally — see ordersStorage.js). No
 // authentication yet (see README.md notes); fine for local development only.
-app.get('/api/staff/orders', (req, res) => {
+app.get('/api/staff/orders', async (req, res) => {
   try {
-    const orders = listOrders();
+    const orders = await listOrders();
     return res.status(200).json({ orders });
   } catch (err) {
     console.error('CafeBot staff orders list error:', err && err.message ? err.message : err);
@@ -178,7 +181,7 @@ app.get('/api/staff/orders', (req, res) => {
   }
 });
 
-app.post('/api/staff/orders/:orderId/status', (req, res) => {
+app.post('/api/staff/orders/:orderId/status', async (req, res) => {
   const { orderId } = req.params;
   const { status } = req.body || {};
 
@@ -187,7 +190,7 @@ app.post('/api/staff/orders/:orderId/status', (req, res) => {
   }
 
   try {
-    const result = updateOrderStatus(orderId, status);
+    const result = await updateOrderStatus(orderId, status);
     if (!result.success) {
       return res.status(400).json({ error: result.error });
     }

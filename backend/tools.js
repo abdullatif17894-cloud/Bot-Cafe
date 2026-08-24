@@ -5,7 +5,7 @@ const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
 const { getOrCreateSession, updateSession, resetSession } = require('./orderState');
-const { getOrdersPath } = require('./ordersPath');
+const { readOrders, writeOrders } = require('./ordersStorage');
 
 const MENU_PATH = path.join(__dirname, '..', 'data', 'menu.json');
 const MENU_DATA = JSON.parse(fs.readFileSync(MENU_PATH, 'utf8'));
@@ -17,10 +17,8 @@ const PROMOTIONS_DATA = JSON.parse(fs.readFileSync(PROMOTIONS_PATH, 'utf8'));
 const PRICING_PATH = path.join(__dirname, '..', 'data', 'pricing.json');
 const PRICING_DATA = JSON.parse(fs.readFileSync(PRICING_PATH, 'utf8'));
 
-// Temporary, file-based order storage for local development only (see
-// README.md notes) — where a finalized order is actually saved.
-// getOrdersPath() resolves to a writable location on Vercel too (see
-// ordersPath.js) so checkout doesn't crash in production.
+// Orders are saved via ordersStorage.js — Upstash Redis on Vercel,
+// data/orders.json locally. See ordersStorage.js for details.
 
 const TOOLS = [
   {
@@ -1111,7 +1109,7 @@ function classifyConfirmationReply(reply) {
   };
 }
 
-function finalizeOrderTool(input, sessionId) {
+async function finalizeOrderTool(input, sessionId) {
   const { confirmed, customerReply } = input || {};
 
   if (confirmed !== true) {
@@ -1158,10 +1156,9 @@ function finalizeOrderTool(input, sessionId) {
     pricing: summary.pricing,
   };
 
-  const ordersPath = getOrdersPath();
-  const existingOrders = JSON.parse(fs.readFileSync(ordersPath, 'utf8'));
+  const existingOrders = await readOrders();
   existingOrders.push(savedOrder);
-  fs.writeFileSync(ordersPath, JSON.stringify(existingOrders, null, 2) + '\n', 'utf8');
+  await writeOrders(existingOrders);
 
   // The order is saved; this session is free to start a new one.
   resetSession(sessionId);
@@ -1169,7 +1166,7 @@ function finalizeOrderTool(input, sessionId) {
   return { success: true, finalized: true, orderId, confirmedAt, savedOrder };
 }
 
-function executeTool(toolName, toolInput, sessionId) {
+async function executeTool(toolName, toolInput, sessionId) {
   if (toolName === 'getMenu') {
     return getMenuTool();
   }
@@ -1210,7 +1207,7 @@ function executeTool(toolName, toolInput, sessionId) {
     return getOrderSummaryTool(sessionId);
   }
   if (toolName === 'finalizeOrder') {
-    return finalizeOrderTool(toolInput, sessionId);
+    return await finalizeOrderTool(toolInput, sessionId);
   }
   throw new Error(`Unknown tool: ${toolName}`);
 }
